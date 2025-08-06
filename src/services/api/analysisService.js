@@ -41,6 +41,7 @@ async analyzeImage(imageId, progressCallback = null) {
       }
 
       // Generate a realistic analysis result
+// Generate a realistic analysis result
       const baseResult = analysisResultsData[Math.floor(Math.random() * analysisResultsData.length)]
       
       // Create a new result with some randomization
@@ -52,12 +53,14 @@ async analyzeImage(imageId, progressCallback = null) {
         visualImpact: this.generateScore(65, 98),
         messageClarity: this.generateScore(70, 95),
         brandRecognition: this.generateScore(60, 95),
+        visualSummary: this.getRandomVisualSummary(),
+        purpose: this.getRandomPurpose(),
         targetAudience: this.getRandomTargetAudience(),
+        overallStrength: this.getRandomOverallStrength(),
         suggestions: this.getRandomSuggestions(),
+        recommendationsWithScores: this.getRandomRecommendationsWithScores(),
         analyzedAt: new Date().toISOString()
       }
-      
-      return result
     } catch (error) {
       throw new Error("Failed to analyze image")
     }
@@ -145,7 +148,7 @@ async analyzeImage(imageId, progressCallback = null) {
     return shuffled.slice(0, count)
   }
   
-  getRandomSuggestions() {
+getRandomSuggestions() {
     const allSuggestions = [
       "Consider increasing the contrast between your main text and background for better readability",
       "Your color palette effectively captures attention - maintain this vibrant approach in future creatives",
@@ -172,7 +175,70 @@ async analyzeImage(imageId, progressCallback = null) {
     // Return 4-6 random suggestions
     const count = Math.floor(Math.random() * 3) + 4
     const shuffled = allSuggestions.sort(() => 0.5 - Math.random())
-return shuffled.slice(0, count)
+    return shuffled.slice(0, count)
+  }
+
+  getRandomVisualSummary() {
+    const visualSummaries = [
+      "Modern luxury apartment listing with professional photography showcasing spacious interiors and premium finishes",
+      "Suburban family home advertisement featuring exterior shot with landscaped yard and traditional architectural style",
+      "Premium commercial real estate investment opportunity showcasing modern office building with impressive architecture",
+      "Cozy starter home with updated kitchen and bathrooms in established neighborhood",
+      "Waterfront property featuring panoramic views and private dock access",
+      "Historic downtown loft conversion with exposed brick and industrial design elements"
+    ]
+    
+    return visualSummaries[Math.floor(Math.random() * visualSummaries.length)]
+  }
+
+  getRandomPurpose() {
+    const purposes = [
+      "Attract affluent buyers for high-end residential property in downtown core",
+      "Market family-friendly property to middle-income households seeking suburban lifestyle",
+      "Attract serious investors for high-value commercial property acquisition",
+      "Generate interest from first-time homebuyers in affordable housing market",
+      "Appeal to luxury lifestyle buyers seeking exclusive waterfront living",
+      "Target young professionals looking for urban loft living experience"
+    ]
+    
+    return purposes[Math.floor(Math.random() * purposes.length)]
+  }
+
+  getRandomOverallStrength() {
+    const strengths = [
+      "Excellent visual appeal with professional staging and lighting that effectively conveys luxury positioning",
+      "Clear messaging with good property presentation, though visual impact could be enhanced",
+      "Outstanding professional presentation with compelling investment metrics and premium positioning",
+      "Strong emphasis on affordability and family-friendly features with clear value proposition",
+      "Exceptional lifestyle imagery that captures the aspirational aspects of waterfront living",
+      "Modern urban aesthetic with strong appeal to target demographic preferences"
+    ]
+    
+    return strengths[Math.floor(Math.random() * strengths.length)]
+  }
+
+  getRandomRecommendationsWithScores() {
+    const allRecommendations = [
+      "Add neighborhood amenities showcase to increase buyer interest (+15 points)",
+      "Include virtual tour QR code for enhanced engagement (+12 points)",
+      "Highlight unique selling propositions more prominently (+18 points)",
+      "Add social proof through recent sales data (+10 points)",
+      "Improve photography with professional staging (+20 points)",
+      "Add school district and safety ratings prominently (+15 points)",
+      "Include family lifestyle imagery to connect emotionally (+12 points)",
+      "Highlight financing options and affordability (+8 points)",
+      "Add detailed ROI projections and cash flow analysis (+5 points)",
+      "Include tenant occupancy rates and lease terms (+3 points)",
+      "Highlight location advantages and growth potential (+2 points)",
+      "Showcase property's investment potential with market data (+14 points)",
+      "Add energy efficiency ratings and green features (+11 points)",
+      "Include neighborhood walkability and transit scores (+9 points)"
+    ]
+    
+    // Return 3-5 random recommendations
+    const count = Math.floor(Math.random() * 3) + 3
+    const shuffled = allRecommendations.sort(() => 0.5 - Math.random())
+    return shuffled.slice(0, count)
   }
 
   async generateShareUrl(analysisResult, imageData) {

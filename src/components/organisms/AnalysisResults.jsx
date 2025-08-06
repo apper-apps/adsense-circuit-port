@@ -137,23 +137,99 @@ const handleShareAnalysis = async () => {
     }
   }
 
+const getScoreClassification = (score) => {
+    if (score >= 91) return { label: "Excellent", color: "text-green-600", bgColor: "bg-green-50" }
+    if (score >= 61) return { label: "Good", color: "text-blue-600", bgColor: "bg-blue-50" }
+    if (score >= 31) return { label: "Average", color: "text-yellow-600", bgColor: "bg-yellow-50" }
+    return { label: "Below Average", color: "text-red-600", bgColor: "bg-red-50" }
+  }
+
+  const scoreClass = getScoreClassification(analysisResult.overallScore)
+
   return (
     <div className="space-y-6 analysis-card">
-      {/* Overall Score */}
+      {/* Real Estate Ad Creative Analysis Header */}
       <Card className="border-purple-200 bg-gradient-to-br from-purple-50 to-white">
-        <CardHeader>
-          <CardTitle className="text-2xl text-center">Analysis Complete</CardTitle>
-          <div className="flex justify-center">
-            <div className="text-center">
-              <div className="w-24 h-24 mx-auto mb-3 relative">
-                <div className="w-full h-full rounded-full bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg">
-                  <span className="text-3xl font-bold text-white">{analysisResult.overallScore}</span>
-                </div>
-              </div>
-              <p className="text-sm text-gray-600">Overall Creative Score</p>
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl font-bold text-gray-900">
+            🎯 Real Estate Ad Creative Analysis
+          </CardTitle>
+          <div className="w-24 h-24 mx-auto mb-4">
+            <div className="w-full h-full rounded-full bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg">
+              <span className="text-3xl font-bold text-white">{analysisResult.overallScore}</span>
             </div>
           </div>
+          <Badge className={`${scoreClass.color} ${scoreClass.bgColor} border-0`}>
+            {scoreClass.label} ({analysisResult.overallScore} out of 100)
+          </Badge>
         </CardHeader>
+      </Card>
+
+      {/* Strategic Objective Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2 text-xl">
+            <ApperIcon name="Target" size={22} className="text-purple-600" />
+            <span>🎯 Strategic Objective</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <h4 className="font-semibold text-gray-900 mb-2">1. Visual Summary:</h4>
+            <p className="text-gray-700 bg-gray-50 p-3 rounded-lg">{analysisResult.visualSummary}</p>
+          </div>
+          <div>
+            <h4 className="font-semibold text-gray-900 mb-2">2. Purpose:</h4>
+            <p className="text-gray-700 bg-gray-50 p-3 rounded-lg">{analysisResult.purpose}</p>
+          </div>
+          <div>
+            <h4 className="font-semibold text-gray-900 mb-2">3. Target Audience:</h4>
+            <div className="flex flex-wrap gap-2">
+              {analysisResult.targetAudience.map((audience, index) => (
+                <Badge key={index} variant="default" className="bg-purple-100 text-purple-800">
+                  {audience}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Visual Analysis Summary */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2 text-xl">
+            <ApperIcon name="BarChart3" size={22} className="text-blue-600" />
+            <span>🖼️ Visual Analysis Summary</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <h4 className="font-semibold text-gray-900 mb-2">
+              1. Total Score: ({analysisResult.overallScore} out of 100) - 
+              <span className={`ml-2 ${scoreClass.color}`}>{scoreClass.label}</span>
+            </h4>
+          </div>
+          <div>
+            <h4 className="font-semibold text-gray-900 mb-2">2. Overall Strength:</h4>
+            <p className="text-gray-700 bg-blue-50 p-3 rounded-lg">{analysisResult.overallStrength}</p>
+          </div>
+          <div>
+            <h4 className="font-semibold text-gray-900 mb-2">3. Overall Recommendations:</h4>
+            <div className="space-y-2">
+              {analysisResult.recommendationsWithScores?.map((recommendation, index) => (
+                <div key={index} className="flex items-start space-x-3 p-3 bg-green-50 rounded-lg border-l-4 border-green-400">
+                  <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mt-0.5">
+                    <span className="text-xs font-semibold text-green-600">{index + 1}</span>
+                  </div>
+                  <p className="text-sm text-gray-700 flex-1">{recommendation}</p>
+                </div>
+              )) || (
+                <p className="text-gray-500 italic">No specific recommendations available</p>
+              )}
+            </div>
+          </div>
+        </CardContent>
       </Card>
 
       {/* Action Buttons */}
@@ -201,52 +277,35 @@ const handleShareAnalysis = async () => {
         />
         <AnalysisScore
           title="Brand Recognition"
-          score={85}
+          score={analysisResult.brandRecognition}
           description="How well your brand elements stand out and create recognition"
           color="green"
         />
       </div>
 
-      {/* Target Audience */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <ApperIcon name="Users" size={20} className="text-purple-600" />
-            <span>Target Audience</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-wrap gap-2">
-            {analysisResult.targetAudience.map((audience, index) => (
-              <Badge key={index} variant="default">
-                {audience}
-              </Badge>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Optimization Suggestions */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <ApperIcon name="Lightbulb" size={20} className="text-amber-500" />
-            <span>Optimization Suggestions</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {analysisResult.suggestions.map((suggestion, index) => (
-              <div key={index} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
-                <div className="w-6 h-6 bg-amber-100 rounded-full flex items-center justify-center mt-0.5">
-                  <span className="text-xs font-semibold text-amber-600">{index + 1}</span>
+      {/* Additional Optimization Suggestions */}
+      {analysisResult.suggestions && analysisResult.suggestions.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <ApperIcon name="Lightbulb" size={20} className="text-amber-500" />
+              <span>Additional Optimization Tips</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {analysisResult.suggestions.map((suggestion, index) => (
+                <div key={index} className="flex items-start space-x-3 p-3 bg-amber-50 rounded-lg">
+                  <div className="w-6 h-6 bg-amber-100 rounded-full flex items-center justify-center mt-0.5">
+                    <span className="text-xs font-semibold text-amber-600">{index + 1}</span>
+                  </div>
+                  <p className="text-sm text-gray-700 flex-1">{suggestion}</p>
                 </div>
-                <p className="text-sm text-gray-700 flex-1">{suggestion}</p>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Analysis Timestamp */}
       <Card className="bg-gray-50">

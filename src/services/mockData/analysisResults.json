@@ -6,13 +6,22 @@
     "visualImpact": 92,
     "messageClarity": 78,
     "brandRecognition": 85,
-    "targetAudience": ["Young Adults (18-34)", "Tech Enthusiasts", "Urban Professionals", "Social Media Users"],
+    "visualSummary": "Modern luxury apartment listing with professional photography showcasing spacious interiors and premium finishes",
+    "purpose": "Attract affluent buyers for high-end residential property in downtown core",
+    "targetAudience": ["High-Income Professionals", "Urban Luxury Buyers", "Investment Property Seekers", "Young Executives"],
+    "overallStrength": "Excellent visual appeal with professional staging and lighting that effectively conveys luxury positioning",
     "suggestions": [
       "Consider increasing the contrast between your main text and background for better readability",
       "Your color palette effectively captures attention - maintain this vibrant approach in future creatives",
       "The call-to-action could be more prominent by increasing its size by 20-30%",
       "Adding a subtle shadow or glow effect to your brand logo would improve brand recognition",
       "Consider testing this creative with A/B variations focusing on different value propositions"
+    ],
+    "recommendationsWithScores": [
+      "Add neighborhood amenities showcase to increase buyer interest (+15 points)",
+      "Include virtual tour QR code for enhanced engagement (+12 points)",
+      "Highlight unique selling propositions more prominently (+18 points)",
+      "Add social proof through recent sales data (+10 points)"
     ],
     "analyzedAt": "2024-01-15T10:30:00.000Z"
   },
@@ -23,13 +32,22 @@
     "visualImpact": 68,
     "messageClarity": 82,
     "brandRecognition": 70,
-    "targetAudience": ["Business Professionals", "Decision Makers", "B2B Audience", "Enterprise Clients"],
+    "visualSummary": "Suburban family home advertisement featuring exterior shot with landscaped yard and traditional architectural style",
+    "purpose": "Market family-friendly property to middle-income households seeking suburban lifestyle",
+    "targetAudience": ["Growing Families", "First-Time Home Buyers", "Suburban Lifestyle Seekers", "Middle-Income Households"],
+    "overallStrength": "Clear messaging with good property presentation, though visual impact could be enhanced",
     "suggestions": [
       "Enhance visual hierarchy by making the headline 25% larger",
       "Consider using a more dynamic background to increase visual interest",
       "Your messaging is clear and direct - excellent work on value proposition",
       "Try incorporating more brand colors to strengthen brand association",
       "Adding testimonials or social proof could boost credibility"
+    ],
+    "recommendationsWithScores": [
+      "Improve photography with professional staging (+20 points)",
+      "Add school district and safety ratings prominently (+15 points)",
+      "Include family lifestyle imagery to connect emotionally (+12 points)",
+      "Highlight financing options and affordability (+8 points)"
     ],
     "analyzedAt": "2024-01-15T11:45:00.000Z"
   },
@@ -40,13 +58,21 @@
     "visualImpact": 98,
     "messageClarity": 89,
     "brandRecognition": 96,
-    "targetAudience": ["Millennials", "Eco-Conscious Consumers", "Lifestyle Enthusiasts", "Social Impact Oriented"],
+    "visualSummary": "Premium commercial real estate investment opportunity showcasing modern office building with impressive architecture",
+    "purpose": "Attract serious investors for high-value commercial property acquisition",
+    "targetAudience": ["Commercial Investors", "Real Estate Investment Firms", "High Net Worth Individuals", "Institutional Buyers"],
+    "overallStrength": "Outstanding professional presentation with compelling investment metrics and premium positioning",
     "suggestions": [
       "Outstanding visual composition - this creative should perform excellently",
       "Your brand elements are perfectly integrated and highly recognizable",
       "Consider creating variations of this high-performing creative for different platforms",
       "The emotional appeal is strong - maintain this approach in future campaigns",
       "Test different call-to-action wordings to optimize conversion rates"
+    ],
+    "recommendationsWithScores": [
+      "Add detailed ROI projections and cash flow analysis (+5 points)",
+      "Include tenant occupancy rates and lease terms (+3 points)",
+      "Highlight location advantages and growth potential (+2 points)"
     ],
     "analyzedAt": "2024-01-15T14:20:00.000Z"
   }
