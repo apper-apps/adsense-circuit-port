@@ -2,7 +2,7 @@ import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
 
 class PDFService {
-  async generateAnalysisReport(analysisResult, imageData) {
+async generateAnalysisReport(analysisResult, imageData = null) {
     try {
       // Create new PDF document
       const pdf = new jsPDF('p', 'mm', 'a4')
@@ -39,7 +39,7 @@ class PDFService {
       
       yPosition += 20
 
-      // Add image if available
+// Add image if available
       if (imageData && imageData.url) {
         try {
           // Create image element and convert to canvas for PDF
@@ -82,6 +82,12 @@ class PDFService {
           pdf.text('(Original image could not be included)', pageWidth / 2, yPosition, { align: 'center' })
           yPosition += 15
         }
+      } else {
+        // No image data available - add placeholder message
+        pdf.setFontSize(10)
+        pdf.setTextColor(128, 128, 128)
+        pdf.text('(No image data available for this analysis)', pageWidth / 2, yPosition, { align: 'center' })
+        yPosition += 15
       }
 
       // Overall Score Section
@@ -198,6 +204,12 @@ class PDFService {
         throw new Error('Canvas rendering failed. Your browser may not support this feature.')
       } else if (error.message.includes('jsPDF')) {
         throw new Error('PDF library error. Please try refreshing the page and try again.')
+      } else if (!analysisResult) {
+        throw new Error('Cannot generate PDF: Analysis data is missing or invalid.')
+      } else if (!analysisResult.overallScore && analysisResult.overallScore !== 0) {
+        throw new Error('Cannot generate PDF: Analysis scores are missing or incomplete.')
+      } else if (!analysisResult.suggestions || !Array.isArray(analysisResult.suggestions)) {
+        throw new Error('Cannot generate PDF: Analysis recommendations are missing.')
       } else {
         throw new Error(`PDF generation failed: ${error.message || 'Unknown error occurred'}`)
       }

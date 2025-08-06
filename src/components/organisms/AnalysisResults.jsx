@@ -19,14 +19,35 @@ const AnalysisResults = ({ analysisResult, isAnalyzing, imageData }) => {
   }
 
   if (!analysisResult) return null
-  const handleExportPDF = async () => {
-    if (!analysisResult || !imageData) {
-      toast.error("Unable to export - missing analysis or image data")
+const handleExportPDF = async () => {
+    // Enhanced validation with specific error messages
+    if (!analysisResult) {
+      toast.error("Unable to export - no analysis data available. Please run an analysis first.")
       return
     }
 
-setIsExporting(true)
+    // Check for required analysis data fields
+    if (!analysisResult.Id) {
+      toast.error("Unable to export - analysis data is incomplete (missing ID)")
+      return
+    }
+
+    if (!analysisResult.overallScore && analysisResult.overallScore !== 0) {
+      toast.error("Unable to export - analysis data is incomplete (missing overall score)")
+      return
+    }
+
+    // Log what data we have for debugging
+    console.log("Export validation:", {
+      hasAnalysisResult: !!analysisResult,
+      analysisId: analysisResult?.Id,
+      hasImageData: !!imageData,
+      imageUrl: imageData?.url ? "present" : "missing"
+    })
+
+    setIsExporting(true)
     try {
+      // Image data is now optional - PDF service will handle missing images gracefully
       await pdfService.generateAnalysisReport(analysisResult, imageData);
       toast.success("PDF report exported successfully!")
     } catch (error) {
