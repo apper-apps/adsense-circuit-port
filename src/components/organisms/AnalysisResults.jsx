@@ -165,37 +165,6 @@ const getScoreClassification = (score) => {
         </CardHeader>
       </Card>
 
-      {/* Strategic Objective Section */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2 text-xl">
-            <ApperIcon name="Target" size={22} className="text-purple-600" />
-            <span>🎯 Strategic Objective</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <h4 className="font-semibold text-gray-900 mb-2">1. Visual Summary:</h4>
-            <p className="text-gray-700 bg-gray-50 p-3 rounded-lg">{analysisResult.visualSummary}</p>
-          </div>
-          <div>
-            <h4 className="font-semibold text-gray-900 mb-2">2. Purpose:</h4>
-            <p className="text-gray-700 bg-gray-50 p-3 rounded-lg">{analysisResult.purpose}</p>
-          </div>
-          <div>
-            <h4 className="font-semibold text-gray-900 mb-2">3. Target Audience:</h4>
-            <div className="flex flex-wrap gap-2">
-              {analysisResult.targetAudience.map((audience, index) => (
-                <Badge key={index} variant="default" className="bg-purple-100 text-purple-800">
-                  {audience}
-                </Badge>
-              ))}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Visual Analysis Summary */}
 {/* Strategic Objective Section */}
       <Card>
         <CardHeader>
@@ -249,7 +218,7 @@ const getScoreClassification = (score) => {
           </div>
           <div>
             <h4 className="font-semibold text-gray-900 mb-2">2. Overall Strength:</h4>
-            <p className="text-gray-700 bg-blue-50 p-3 rounded-lg">{analysisResult.overallStrength}</p>
+            <p className="text-gray-700 bg-amber-50 p-3 rounded-lg">{analysisResult.overallStrength}</p>
           </div>
           <div>
             <h4 className="font-semibold text-gray-900 mb-2">3. Overall Recommendations: Each point should mention how much score it will increase (i.e. +10, +20, +35)</h4>
