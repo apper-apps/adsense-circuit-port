@@ -36,7 +36,7 @@ const AnalysisResults = ({ analysisResult, isAnalyzing, imageData }) => {
     }
   }
 
-  const handleShareAnalysis = async () => {
+const handleShareAnalysis = async () => {
     if (!analysisResult) {
       toast.error("No analysis to share")
       return
@@ -46,22 +46,67 @@ const AnalysisResults = ({ analysisResult, isAnalyzing, imageData }) => {
     try {
       const shareUrl = await analysisService.generateShareUrl(analysisResult, imageData)
       
+      // Try modern clipboard API with permission check
       if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(shareUrl)
-        toast.success("Shareable link copied to clipboard!")
-      } else {
-        // Fallback for non-secure contexts
-        const textArea = document.createElement('textarea')
-        textArea.value = shareUrl
-        document.body.appendChild(textArea)
-        textArea.select()
-        document.execCommand('copy')
-        document.body.removeChild(textArea)
-        toast.success("Shareable link copied to clipboard!")
+        try {
+          await navigator.clipboard.writeText(shareUrl)
+          toast.success("Shareable link copied to clipboard!")
+          return
+        } catch (clipboardError) {
+          console.warn("Clipboard API failed:", clipboardError)
+          // Fall through to next method
+        }
       }
+      
+      // Try Web Share API if available (mobile-friendly)
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: 'Ad Analysis Result',
+            text: 'Check out this ad analysis result',
+            url: shareUrl
+          })
+          toast.success("Share dialog opened!")
+          return
+        } catch (shareError) {
+          if (shareError.name !== 'AbortError') {
+            console.warn("Share API failed:", shareError)
+          }
+          // Fall through to manual copy
+        }
+      }
+      
+      // Fallback: Create a temporary input for manual selection
+      const textArea = document.createElement('textarea')
+      textArea.value = shareUrl
+      textArea.style.position = 'fixed'
+      textArea.style.left = '-999999px'
+      textArea.style.top = '-999999px'
+      document.body.appendChild(textArea)
+      textArea.focus()
+      textArea.select()
+      
+      try {
+        const successful = document.execCommand('copy')
+        if (successful) {
+          toast.success("Shareable link copied to clipboard!")
+        } else {
+          throw new Error('Copy command failed')
+        }
+      } catch (copyError) {
+        console.warn("Manual copy failed:", copyError)
+        // Show the URL to user for manual copying
+        toast.info(
+          `Please copy this link manually: ${shareUrl.length > 50 ? shareUrl.substring(0, 50) + '...' : shareUrl}`,
+          { autoClose: 10000 }
+        )
+      } finally {
+        document.body.removeChild(textArea)
+      }
+      
     } catch (error) {
       console.error("Share analysis error:", error)
-      toast.error("Failed to generate shareable link")
+      toast.error("Failed to generate shareable link. Please try again.")
     } finally {
       setIsSharing(false)
     }
