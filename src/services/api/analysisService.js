@@ -59,8 +59,10 @@ async analyzeImage(imageId, progressCallback = null) {
         overallStrength: this.getRandomOverallStrength(),
         suggestions: this.getRandomSuggestions(),
         recommendationsWithScores: this.getRandomRecommendationsWithScores(),
-        analyzedAt: new Date().toISOString()
+analyzedAt: new Date().toISOString()
       }
+
+      return result
     } catch (error) {
       throw new Error("Failed to analyze image")
     }

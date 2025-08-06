@@ -196,6 +196,39 @@ const getScoreClassification = (score) => {
       </Card>
 
       {/* Visual Analysis Summary */}
+{/* Strategic Objective Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2 text-xl">
+            <ApperIcon name="Target" size={22} className="text-purple-600" />
+            <span>🎯 Strategic Objective</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <h4 className="font-semibold text-gray-900 mb-2">1. Visual Summary:</h4>
+            <p className="text-gray-700 bg-purple-50 p-3 rounded-lg">{analysisResult.visualSummary}</p>
+          </div>
+          <div>
+            <h4 className="font-semibold text-gray-900 mb-2">2. Purpose:</h4>
+            <p className="text-gray-700 bg-blue-50 p-3 rounded-lg">{analysisResult.purpose}</p>
+          </div>
+          <div>
+            <h4 className="font-semibold text-gray-900 mb-2">3. Target Audience:</h4>
+            <div className="flex flex-wrap gap-2">
+              {analysisResult.targetAudience?.map((audience, index) => (
+                <Badge key={index} variant="secondary" className="bg-green-100 text-green-800 hover:bg-green-200">
+                  {audience}
+                </Badge>
+              )) || (
+                <p className="text-gray-500 italic">No target audience data available</p>
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Visual Analysis Summary Section */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2 text-xl">
@@ -206,8 +239,12 @@ const getScoreClassification = (score) => {
         <CardContent className="space-y-4">
           <div>
             <h4 className="font-semibold text-gray-900 mb-2">
-              1. Total Score: ({analysisResult.overallScore} out of 100) - 
-              <span className={`ml-2 ${scoreClass.color}`}>{scoreClass.label}</span>
+              1. Total Score: ({analysisResult.overallScore} out of 100) and Classify it as 
+              <span className={`ml-2 px-3 py-1 rounded-full text-sm font-medium ${scoreClass.bgColor} ${scoreClass.color}`}>
+                {scoreClass.label} ({analysisResult.overallScore >= 91 ? '91 to 100' : 
+                 analysisResult.overallScore >= 61 ? '61 to 90' : 
+                 analysisResult.overallScore >= 31 ? '31 to 60' : '1 to 30'})
+              </span>
             </h4>
           </div>
           <div>
@@ -215,7 +252,7 @@ const getScoreClassification = (score) => {
             <p className="text-gray-700 bg-blue-50 p-3 rounded-lg">{analysisResult.overallStrength}</p>
           </div>
           <div>
-            <h4 className="font-semibold text-gray-900 mb-2">3. Overall Recommendations:</h4>
+            <h4 className="font-semibold text-gray-900 mb-2">3. Overall Recommendations: Each point should mention how much score it will increase (i.e. +10, +20, +35)</h4>
             <div className="space-y-2">
               {analysisResult.recommendationsWithScores?.map((recommendation, index) => (
                 <div key={index} className="flex items-start space-x-3 p-3 bg-green-50 rounded-lg border-l-4 border-green-400">
