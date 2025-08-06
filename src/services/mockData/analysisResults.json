@@ -1,0 +1,53 @@
+[
+  {
+    "Id": 1,
+    "imageId": "1",
+    "overallScore": 87,
+    "visualImpact": 92,
+    "messageClarity": 78,
+    "brandRecognition": 85,
+    "targetAudience": ["Young Adults (18-34)", "Tech Enthusiasts", "Urban Professionals", "Social Media Users"],
+    "suggestions": [
+      "Consider increasing the contrast between your main text and background for better readability",
+      "Your color palette effectively captures attention - maintain this vibrant approach in future creatives",
+      "The call-to-action could be more prominent by increasing its size by 20-30%",
+      "Adding a subtle shadow or glow effect to your brand logo would improve brand recognition",
+      "Consider testing this creative with A/B variations focusing on different value propositions"
+    ],
+    "analyzedAt": "2024-01-15T10:30:00.000Z"
+  },
+  {
+    "Id": 2,
+    "imageId": "2",
+    "overallScore": 73,
+    "visualImpact": 68,
+    "messageClarity": 82,
+    "brandRecognition": 70,
+    "targetAudience": ["Business Professionals", "Decision Makers", "B2B Audience", "Enterprise Clients"],
+    "suggestions": [
+      "Enhance visual hierarchy by making the headline 25% larger",
+      "Consider using a more dynamic background to increase visual interest",
+      "Your messaging is clear and direct - excellent work on value proposition",
+      "Try incorporating more brand colors to strengthen brand association",
+      "Adding testimonials or social proof could boost credibility"
+    ],
+    "analyzedAt": "2024-01-15T11:45:00.000Z"
+  },
+  {
+    "Id": 3,
+    "imageId": "3",
+    "overallScore": 95,
+    "visualImpact": 98,
+    "messageClarity": 89,
+    "brandRecognition": 96,
+    "targetAudience": ["Millennials", "Eco-Conscious Consumers", "Lifestyle Enthusiasts", "Social Impact Oriented"],
+    "suggestions": [
+      "Outstanding visual composition - this creative should perform excellently",
+      "Your brand elements are perfectly integrated and highly recognizable",
+      "Consider creating variations of this high-performing creative for different platforms",
+      "The emotional appeal is strong - maintain this approach in future campaigns",
+      "Test different call-to-action wordings to optimize conversion rates"
+    ],
+    "analyzedAt": "2024-01-15T14:20:00.000Z"
+  }
+]
