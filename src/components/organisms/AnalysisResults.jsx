@@ -1,12 +1,13 @@
-import React, { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/atoms/Card"
-import AnalysisScore from "@/components/molecules/AnalysisScore"
-import Badge from "@/components/atoms/Badge"
-import ApperIcon from "@/components/ApperIcon"
-import Button from "@/components/atoms/Button"
-import { toast } from "react-toastify"
-import analysisService from "@/services/api/analysisService"
-import pdfService from "@/services/api/pdfService"
+import React, { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/atoms/Card";
+import { toast } from "react-toastify";
+import pdfService from "@/services/api/pdfService";
+import analysisService from "@/services/api/analysisService";
+import ApperIcon from "@/components/ApperIcon";
+import AnalysisScore from "@/components/molecules/AnalysisScore";
+import Error from "@/components/ui/Error";
+import Badge from "@/components/atoms/Badge";
+import Button from "@/components/atoms/Button";
 
 const AnalysisResults = ({ analysisResult, isAnalyzing, imageData }) => {
   const [isExporting, setIsExporting] = useState(false)
@@ -24,13 +25,16 @@ const AnalysisResults = ({ analysisResult, isAnalyzing, imageData }) => {
       return
     }
 
-    setIsExporting(true)
+setIsExporting(true)
     try {
-      await pdfService.generateAnalysisReport(analysisResult, imageData)
+      await pdfService.generateAnalysisReport(analysisResult, imageData);
       toast.success("PDF report exported successfully!")
     } catch (error) {
       console.error("PDF export error:", error)
-      toast.error("Failed to export PDF report")
+      
+      // Show specific error message to user
+      const errorMessage = error.message || "Failed to export PDF report"
+      toast.error(errorMessage, { autoClose: 5000 })
     } finally {
       setIsExporting(false)
     }

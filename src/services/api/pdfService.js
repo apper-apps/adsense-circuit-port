@@ -188,9 +188,19 @@ class PDFService {
       const fileName = `creative-analysis-${analysisResult.Id}-${new Date().toISOString().split('T')[0]}.pdf`
       pdf.save(fileName)
 
-    } catch (error) {
+} catch (error) {
       console.error('PDF generation error:', error)
-      throw new Error('Failed to generate PDF report')
+      
+      // Provide more specific error messages
+      if (error.name === 'SecurityError') {
+        throw new Error('Security error: Unable to access image data. Please ensure the image is from a trusted source.')
+      } else if (error.message.includes('canvas')) {
+        throw new Error('Canvas rendering failed. Your browser may not support this feature.')
+      } else if (error.message.includes('jsPDF')) {
+        throw new Error('PDF library error. Please try refreshing the page and try again.')
+      } else {
+        throw new Error(`PDF generation failed: ${error.message || 'Unknown error occurred'}`)
+      }
     }
   }
 }
