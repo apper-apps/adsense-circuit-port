@@ -128,6 +128,55 @@ body {
   }
 }
 
+/* Analysis History Sidebar Animations */
+.analysis-history-item {
+  transition: all 0.2s ease;
+}
+
+.analysis-history-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.1);
+}
+
+/* Sidebar Transition */
+.sidebar-enter {
+  transform: translateX(100%);
+}
+
+.sidebar-enter-active {
+  transform: translateX(0);
+  transition: transform 300ms ease-out;
+}
+
+.sidebar-exit {
+  transform: translateX(0);
+}
+
+.sidebar-exit-active {
+  transform: translateX(100%);
+  transition: transform 300ms ease-in;
+}
+
+/* Progress Ring Enhanced Animation */
+.progress-step-indicator {
+  animation: stepPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes stepPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+/* Enhanced Progress Bar */
+.progress-bar-glow {
+  box-shadow: 0 0 10px rgba(124, 58, 237, 0.3);
+}
 /* Button Hover Effects */
 .btn-primary {
   background: linear-gradient(135deg, #7C3AED, #A855F7);

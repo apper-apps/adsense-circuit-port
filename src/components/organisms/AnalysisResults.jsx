@@ -3,39 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/atoms/Car
 import AnalysisScore from "@/components/molecules/AnalysisScore"
 import Badge from "@/components/atoms/Badge"
 import ApperIcon from "@/components/ApperIcon"
-
 const AnalysisResults = ({ analysisResult, isAnalyzing }) => {
+// Remove the loading state handling since it's now handled by ProgressIndicator
   if (isAnalyzing) {
-    return (
-      <Card className="analysis-card">
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <div className="w-6 h-6 border-2 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
-            <span>Analyzing Creative...</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="space-y-3">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-gray-200 rounded-full shimmer"></div>
-                  <div className="flex-1 space-y-2">
-                    <div className="h-4 bg-gray-200 rounded shimmer"></div>
-                    <div className="h-3 bg-gray-100 rounded w-2/3 shimmer"></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="text-center py-4">
-              <p className="text-gray-600 pulse-loader">
-                Our AI is analyzing your creative for visual impact, messaging, and audience targeting...
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    )
+    return null
   }
 
   if (!analysisResult) return null

@@ -1,11 +1,45 @@
 import analysisResultsData from "@/services/mockData/analysisResults.json"
 
 class AnalysisService {
-  async analyzeImage(imageId) {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 3000))
-    
+async analyzeImage(imageId, progressCallback = null) {
+    const steps = [
+      { message: "Analyzing visual elements...", duration: 500 },
+      { message: "Processing copy and messaging...", duration: 800 },
+      { message: "Evaluating brand recognition...", duration: 600 },
+      { message: "Assessing target audience fit...", duration: 700 },
+      { message: "Generating recommendations...", duration: 900 },
+      { message: "Finalizing analysis...", duration: 400 }
+    ]
+
+    let totalProgress = 0
+    const totalDuration = steps.reduce((sum, step) => sum + step.duration, 0)
+
     try {
+      // Simulate step-by-step analysis with progress updates
+      for (let i = 0; i < steps.length; i++) {
+        const step = steps[i]
+        
+        if (progressCallback) {
+          progressCallback({
+            step: i,
+            message: step.message,
+            progress: Math.round((totalProgress / totalDuration) * 100)
+          })
+        }
+
+        await new Promise(resolve => setTimeout(resolve, step.duration))
+        totalProgress += step.duration
+      }
+
+      // Final progress update
+      if (progressCallback) {
+        progressCallback({
+          step: steps.length - 1,
+          message: "Analysis complete!",
+          progress: 100
+        })
+      }
+
       // Generate a realistic analysis result
       const baseResult = analysisResultsData[Math.floor(Math.random() * analysisResultsData.length)]
       
@@ -26,6 +60,59 @@ class AnalysisService {
       return result
     } catch (error) {
       throw new Error("Failed to analyze image")
+    }
+  }
+
+  async saveAnalysis(analysisResult, imageData) {
+    try {
+      // Get existing saved analyses
+      const existingAnalyses = JSON.parse(localStorage.getItem('savedAnalyses') || '[]')
+      
+      // Create saved analysis with image data
+      const savedAnalysis = {
+        ...analysisResult,
+        imageName: imageData.name,
+        imageUrl: imageData.url,
+        imageSize: imageData.size,
+        imageType: imageData.type,
+        savedAt: new Date().toISOString()
+      }
+      
+      // Add to beginning of array (most recent first)
+      existingAnalyses.unshift(savedAnalysis)
+      
+      // Limit to 50 most recent analyses
+      const limitedAnalyses = existingAnalyses.slice(0, 50)
+      
+      // Save to localStorage
+      localStorage.setItem('savedAnalyses', JSON.stringify(limitedAnalyses))
+      
+      return savedAnalysis
+    } catch (error) {
+      console.error('Failed to save analysis:', error)
+      throw new Error("Failed to save analysis")
+    }
+  }
+
+  async getAnalysisHistory() {
+    try {
+      const savedAnalyses = JSON.parse(localStorage.getItem('savedAnalyses') || '[]')
+      return savedAnalyses.sort((a, b) => new Date(b.analyzedAt) - new Date(a.analyzedAt))
+    } catch (error) {
+      console.error('Failed to load analysis history:', error)
+      return []
+    }
+  }
+
+  async deleteAnalysis(analysisId) {
+    try {
+      const existingAnalyses = JSON.parse(localStorage.getItem('savedAnalyses') || '[]')
+      const filteredAnalyses = existingAnalyses.filter(analysis => analysis.Id !== analysisId)
+      localStorage.setItem('savedAnalyses', JSON.stringify(filteredAnalyses))
+      return filteredAnalyses
+    } catch (error) {
+      console.error('Failed to delete analysis:', error)
+      throw new Error("Failed to delete analysis")
     }
   }
   

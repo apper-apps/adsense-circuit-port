@@ -1,19 +1,36 @@
-import React, { useState } from "react"
-import Header from "@/components/organisms/Header"
-import UploadSection from "@/components/organisms/UploadSection"
-import AnalysisResults from "@/components/organisms/AnalysisResults"
-import Button from "@/components/atoms/Button"
-import ApperIcon from "@/components/ApperIcon"
-import { toast } from "react-toastify"
-import analysisService from "@/services/api/analysisService"
+import React, { useEffect, useState } from "react";
+import ProgressIndicator from "@/components/ui/ProgressIndicator";
+import AnalysisHistory from "@/components/organisms/AnalysisHistory";
+import { toast } from "react-toastify";
+import analysisService from "@/services/api/analysisService";
+import ApperIcon from "@/components/ApperIcon";
+import AnalysisResults from "@/components/organisms/AnalysisResults";
+import Header from "@/components/organisms/Header";
+import UploadSection from "@/components/organisms/UploadSection";
+import Button from "@/components/atoms/Button";
 
 const HomePage = () => {
-  const [uploadedImage, setUploadedImage] = useState(null)
-  const [analysisResult, setAnalysisResult] = useState(null)
-  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [uploadedImage, setUploadedImage] = useState(null);
+  const [analysisResult, setAnalysisResult] = useState(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisProgress, setAnalysisProgress] = useState({ step: 0, message: '', progress: 0 });
+const [showHistory, setShowHistory] = useState(false);
+  const [analysisHistory, setAnalysisHistory] = useState([]);
 
-  const handleFileSelect = (file) => {
-    const imageUrl = URL.createObjectURL(file)
+  useEffect(() => {
+    loadAnalysisHistory();
+  }, []);
+
+const loadAnalysisHistory = async () => {
+    try {
+      const history = await analysisService.getAnalysisHistory();
+      setAnalysisHistory(history);
+    } catch (error) {
+      console.error("Failed to load analysis history:", error);
+    }
+  };
+const handleFileSelect = (file) => {
+    const imageUrl = URL.createObjectURL(file);
     const uploadedImageData = {
       id: Date.now().toString(),
       file: file,
@@ -22,44 +39,82 @@ const HomePage = () => {
       size: file.size,
       type: file.type,
       uploadedAt: new Date()
-    }
+    };
     
-    setUploadedImage(uploadedImageData)
-    setAnalysisResult(null)
-    toast.success("Image uploaded successfully!")
-  }
+    setUploadedImage(uploadedImageData);
+    setAnalysisResult(null);
+    toast.success("Image uploaded successfully!");
+  };
 
-  const handleRemoveImage = () => {
+const handleRemoveImage = () => {
     if (uploadedImage?.url) {
-      URL.revokeObjectURL(uploadedImage.url)
+      URL.revokeObjectURL(uploadedImage.url);
     }
-    setUploadedImage(null)
-    setAnalysisResult(null)
-    toast.info("Image removed")
-  }
-
-  const handleAnalyze = async () => {
+    setUploadedImage(null);
+    setAnalysisResult(null);
+    toast.info("Image removed");
+  };
+const handleAnalyze = async () => {
     if (!uploadedImage) {
-      toast.error("Please upload an image first")
-      return
+      toast.error("Please upload an image first");
+      return;
     }
 
-    setIsAnalyzing(true)
+    setIsAnalyzing(true);
+    setAnalysisProgress({ step: 0, message: 'Initializing analysis...', progress: 0 });
+    
     try {
-      const result = await analysisService.analyzeImage(uploadedImage.id)
-      setAnalysisResult(result)
-      toast.success("Analysis complete!")
+      const result = await analysisService.analyzeImage(uploadedImage.id, (progress) => {
+        setAnalysisProgress(progress);
+      });
+      
+      const savedAnalysis = await analysisService.saveAnalysis(result, uploadedImage);
+      setAnalysisResult(savedAnalysis);
+      await loadAnalysisHistory();
+      toast.success("Analysis complete and saved!");
     } catch (error) {
-      toast.error("Analysis failed. Please try again.")
-      console.error("Analysis error:", error)
+      toast.error("Analysis failed. Please try again.");
+      console.error("Analysis error:", error);
     } finally {
-      setIsAnalyzing(false)
+      setIsAnalyzing(false);
+      setAnalysisProgress({ step: 0, message: '', progress: 0 });
     }
-  }
+  };
 
-  return (
-    <div className="min-h-screen bg-gray-50">
+const handleViewAnalysis = (analysis) => {
+    setAnalysisResult(analysis);
+    setUploadedImage(null); // Clear current upload when viewing history
+    setShowHistory(false);
+  };
+
+return (
+    <div className="min-h-screen bg-gray-50 relative">
       <Header />
+      
+      {/* History Toggle Button */}
+      <button
+        onClick={() => setShowHistory(!showHistory)}
+        className="fixed top-20 right-4 z-40 bg-white shadow-lg rounded-full p-3 hover:bg-gray-50 transition-colors duration-200"
+        title="Analysis History"
+      >
+        <ApperIcon name="History" size={20} className="text-gray-600" />
+        {analysisHistory.length > 0 && (
+          <span className="absolute -top-1 -right-1 bg-purple-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+            {analysisHistory.length}
+          </span>
+        )}
+      </button>
+
+      {/* Analysis History Sidebar */}
+      <AnalysisHistory 
+        isOpen={showHistory}
+        onClose={() => setShowHistory(false)}
+        analyses={analysisHistory}
+        onViewAnalysis={handleViewAnalysis}
+      />
+
+      {/* Main Content */}
+      <div className={`transition-all duration-300 ${showHistory ? 'mr-80' : ''}`}>
       
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
@@ -81,8 +136,17 @@ const HomePage = () => {
             onRemoveImage={handleRemoveImage}
           />
 
+{/* Progress Indicator */}
+          {isAnalyzing && (
+            <ProgressIndicator 
+              step={analysisProgress.step}
+              message={analysisProgress.message}
+              progress={analysisProgress.progress}
+            />
+          )}
+
           {/* Analyze Button */}
-          {uploadedImage && !analysisResult && (
+          {uploadedImage && !analysisResult && !isAnalyzing && (
             <div className="flex justify-center">
               <Button 
                 onClick={handleAnalyze}
@@ -90,26 +154,19 @@ const HomePage = () => {
                 size="lg"
                 className="min-w-[200px]"
               >
-                {isAnalyzing ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                    Analyzing...
-                  </>
-                ) : (
-                  <>
-                    <ApperIcon name="Zap" size={20} className="mr-2" />
-                    Analyze Creative
-                  </>
-                )}
+                <ApperIcon name="Zap" size={20} className="mr-2" />
+                Analyze Creative
               </Button>
             </div>
           )}
 
-          {/* Analysis Results */}
-          <AnalysisResults 
-            analysisResult={analysisResult}
-            isAnalyzing={isAnalyzing}
-          />
+{/* Analysis Results */}
+          {!isAnalyzing && (
+            <AnalysisResults 
+              analysisResult={analysisResult}
+              isAnalyzing={false}
+            />
+          )}
 
           {/* New Analysis Button */}
           {analysisResult && !isAnalyzing && (
@@ -128,9 +185,10 @@ const HomePage = () => {
             </div>
           )}
         </div>
-      </main>
+</main>
     </div>
-  )
-}
+    </div>
+  );
+};
 
-export default HomePage
+export default HomePage;
