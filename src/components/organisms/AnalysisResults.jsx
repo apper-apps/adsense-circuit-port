@@ -1,15 +1,72 @@
-import React from "react"
+import React, { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/atoms/Card"
 import AnalysisScore from "@/components/molecules/AnalysisScore"
 import Badge from "@/components/atoms/Badge"
 import ApperIcon from "@/components/ApperIcon"
-const AnalysisResults = ({ analysisResult, isAnalyzing }) => {
+import Button from "@/components/atoms/Button"
+import { toast } from "react-toastify"
+import analysisService from "@/services/api/analysisService"
+import pdfService from "@/services/api/pdfService"
+
+const AnalysisResults = ({ analysisResult, isAnalyzing, imageData }) => {
 // Remove the loading state handling since it's now handled by ProgressIndicator
   if (isAnalyzing) {
     return null
   }
 
   if (!analysisResult) return null
+
+const [isExporting, setIsExporting] = useState(false)
+  const [isSharing, setIsSharing] = useState(false)
+
+  const handleExportPDF = async () => {
+    if (!analysisResult || !imageData) {
+      toast.error("Unable to export - missing analysis or image data")
+      return
+    }
+
+    setIsExporting(true)
+    try {
+      await pdfService.generateAnalysisReport(analysisResult, imageData)
+      toast.success("PDF report exported successfully!")
+    } catch (error) {
+      console.error("PDF export error:", error)
+      toast.error("Failed to export PDF report")
+    } finally {
+      setIsExporting(false)
+    }
+  }
+
+  const handleShareAnalysis = async () => {
+    if (!analysisResult) {
+      toast.error("No analysis to share")
+      return
+    }
+
+    setIsSharing(true)
+    try {
+      const shareUrl = await analysisService.generateShareUrl(analysisResult, imageData)
+      
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(shareUrl)
+        toast.success("Shareable link copied to clipboard!")
+      } else {
+        // Fallback for non-secure contexts
+        const textArea = document.createElement('textarea')
+        textArea.value = shareUrl
+        document.body.appendChild(textArea)
+        textArea.select()
+        document.execCommand('copy')
+        document.body.removeChild(textArea)
+        toast.success("Shareable link copied to clipboard!")
+      }
+    } catch (error) {
+      console.error("Share analysis error:", error)
+      toast.error("Failed to generate shareable link")
+    } finally {
+      setIsSharing(false)
+    }
+  }
 
   return (
     <div className="space-y-6 analysis-card">
@@ -29,6 +86,35 @@ const AnalysisResults = ({ analysisResult, isAnalyzing }) => {
           </div>
         </CardHeader>
       </Card>
+
+      {/* Action Buttons */}
+      <div className="flex flex-col sm:flex-row gap-3 justify-center">
+        <Button
+          onClick={handleExportPDF}
+          disabled={isExporting}
+          className="flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <ApperIcon 
+            name={isExporting ? "Loader2" : "Download"} 
+            size={16} 
+            className={isExporting ? "animate-spin" : ""} 
+          />
+          <span>{isExporting ? "Exporting..." : "Export PDF"}</span>
+        </Button>
+        
+        <Button
+          onClick={handleShareAnalysis}
+          disabled={isSharing}
+          className="flex items-center justify-center space-x-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-6 py-3 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <ApperIcon 
+            name={isSharing ? "Loader2" : "Share2"} 
+            size={16} 
+            className={isSharing ? "animate-spin" : ""} 
+          />
+          <span>{isSharing ? "Generating Link..." : "Share Analysis"}</span>
+        </Button>
+      </div>
 
       {/* Detailed Scores */}
       <div className="grid gap-4 md:grid-cols-3">

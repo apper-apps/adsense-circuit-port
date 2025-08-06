@@ -172,7 +172,58 @@ async analyzeImage(imageId, progressCallback = null) {
     // Return 4-6 random suggestions
     const count = Math.floor(Math.random() * 3) + 4
     const shuffled = allSuggestions.sort(() => 0.5 - Math.random())
-    return shuffled.slice(0, count)
+return shuffled.slice(0, count)
+  }
+
+  async generateShareUrl(analysisResult, imageData) {
+    try {
+      // Generate unique share ID
+      const shareId = `share_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      
+      // Create shareable data
+      const shareData = {
+        Id: shareId,
+        analysisResult: analysisResult,
+        imageData: imageData,
+        sharedAt: new Date().toISOString(),
+        accessCount: 0
+      }
+      
+      // Store in localStorage (in production, this would be sent to a backend)
+      const existingShares = JSON.parse(localStorage.getItem('sharedAnalyses') || '{}')
+      existingShares[shareId] = shareData
+      localStorage.setItem('sharedAnalyses', JSON.stringify(existingShares))
+      
+      // Generate shareable URL
+      const baseUrl = window.location.origin
+      const shareUrl = `${baseUrl}/shared/${shareId}`
+      
+      return shareUrl
+    } catch (error) {
+      console.error('Failed to generate share URL:', error)
+      throw new Error("Failed to generate shareable link")
+    }
+  }
+
+  async getSharedAnalysis(shareId) {
+    try {
+      const existingShares = JSON.parse(localStorage.getItem('sharedAnalyses') || '{}')
+      const shareData = existingShares[shareId]
+      
+      if (!shareData) {
+        throw new Error("Shared analysis not found")
+      }
+      
+      // Increment access count
+      shareData.accessCount = (shareData.accessCount || 0) + 1
+      existingShares[shareId] = shareData
+      localStorage.setItem('sharedAnalyses', JSON.stringify(existingShares))
+      
+      return shareData
+    } catch (error) {
+      console.error('Failed to get shared analysis:', error)
+      throw new Error("Failed to load shared analysis")
+    }
   }
 }
 
