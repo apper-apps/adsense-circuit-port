@@ -9,16 +9,15 @@ import analysisService from "@/services/api/analysisService"
 import pdfService from "@/services/api/pdfService"
 
 const AnalysisResults = ({ analysisResult, isAnalyzing, imageData }) => {
-// Remove the loading state handling since it's now handled by ProgressIndicator
+  const [isExporting, setIsExporting] = useState(false)
+  const [isSharing, setIsSharing] = useState(false)
+
+  // Remove the loading state handling since it's now handled by ProgressIndicator
   if (isAnalyzing) {
     return null
   }
 
   if (!analysisResult) return null
-
-const [isExporting, setIsExporting] = useState(false)
-  const [isSharing, setIsSharing] = useState(false)
-
   const handleExportPDF = async () => {
     if (!analysisResult || !imageData) {
       toast.error("Unable to export - missing analysis or image data")
